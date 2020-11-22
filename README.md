@@ -25,6 +25,6 @@ Data : a 8multiply8 matrix :
 1 0 1 1 1 1 0 1
 Mode : only one bit :
 0
-In the Mode.txt file , 0  means doing encryption  , 1 means doing decrypt
+In the Mode.txt file , 0  means doing encryption,the ciphertext will output in the ciphertext.txt . 1 means doing decrypt,the cleartext will output in the cleartext.txt .
 
-Why can't display the enter？
+Why can't display the enter？XD
