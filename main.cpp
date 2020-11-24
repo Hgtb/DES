@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
-// #include <map>
 
 using namespace std;
 
@@ -114,38 +113,7 @@ int S_table[8][4][16] = {
         { 2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11}
     }
 }; //S_table 4*16  6 --> 4
-/*
 void input(){//done
-    //cout<<"Input Begin"<<endl;
-    ifstream readFile;
-    readFile.open("inputs.txt");
-    char basicInput[1024] = {0}; //basidInput has spaces and line break
-    readFile.getline( basicInput , 260 , 0 );
-    for (int i = 0 ; i <= 126 ; i = i + 2){ //get basicKey from basicInput
-        basicKey[i/2] = basicInput[i]-48;
-    }
-    //cout<<"basicKey Done"<<endl;
-    for (int i = 0 ; i < 56 ; i++){
-        Key[0][i] = basicKey[K1_table[i]-1];
-    }
-    //cout<<"Key[0] Done"<<endl;
-    for (int i = 129 ; i <= 255 ; i = i + 2){ //get Data from basicInput
-        Data[( i - 1 ) / 2 - 64] = basicInput[i] - 48;
-    }
-    cout << "Data : ";
-    for (int i = 0 ; i < 64 ; i++)
-        cout << Data[i] <<" ";
-    cout<<endl;
-    cout<<"Data Done"<<endl;
-    Mode = basicInput[258] - 48; //get Mode from basicInput
-    readFile.close();
-    //cout<<"Input Done"<<endl;
-}
-*/
-void input(){//done
-
-    //cout<<"Input Begin"<<endl;
-
     ifstream ReadKey,ReadData,ReadMode;
     char BasicInputKey[512] = {0}; //BasidInputKey has spaces and line break
     char BasicInputData[512] = {0}; //BasidInputData has spaces and line break
@@ -156,21 +124,7 @@ void input(){//done
     for (int i = 0 ; i <= 126 ; i = i + 2){ //get basicKey from basicInput
         BasicKey[i/2] = BasicInputKey[i]-48;
     }
-    ReadKey.close();
-    //Get basicKey
-    /*
-    cout<<"BasicInputKey : "<<endl;
-    for (int i = 0 ; i < 127 ; i++){
-        cout<<i<<" "<<BasicInputKey[i]<<endl;
-    }
-    cout<<"BasicKey : "<<endl;
-    for (int i = 0 ; i < 8 ; i++){
-        for (int j = 0 ; j < 8 ; j++){
-            cout<<BasicKey[i*8 + j]<<" ";
-        }
-        cout<<endl;
-    }
-    */
+    ReadKey.close();//Get basicKey
 
     ReadData.open("Data.txt");
     ReadData.getline( BasicInputData , 260 , 0); //Need to optimize
@@ -178,71 +132,31 @@ void input(){//done
     	Data[i/2] = BasicInputData[i]-48;
 	}
 	ReadData.close();
-    /*
-    cout<<"Data : "<<endl;
-    for (int i = 0 ; i < 8 ; i++){
-        for (int j = 0 ; j < 8 ; j++){
-            cout<<Data[i*8 + j]<<" ";
-        }
-        cout<<endl;
-    }
-    //cout<<"basicKey Done"<<endl;
-    */
+
     ReadMode.open("Mode.txt");
     ReadMode.getline( BasicInputMode , 2 , 0);
     Mode = BasicInputMode[0]-48;
     ReadMode.close();
 
-    //cout<<"Mode : "<<Mode<<endl;
-
     for (int i = 0 ; i < 56 ; i++){
         Key[0][i] = BasicKey[K1_table[i]-1];
-    }
-    //cout<<"Key[0] Done"<<endl;
-    //Get Key
+    }//Get Key
 }
 void IPSwap(){//done
     for (int i = 0 ; i < 64 ; i++){
         IPcache[i] = Data[IP_table[i] - 1];
     } //Data --> IP
-    /*
-    cout<<"IPcashe : ";
-    for (int i = 0 ; i < 64 ; i++)
-        cout << IPcache[i] <<" ";
-    cout << endl;
-    */
     for (int i = 0 ; i < 32 ; i++){
         L[0][i] = IPcache[i];
         R[0][i] = IPcache[i + 32];
     }//initialize L[0][i],R[0][i]
-    /*
-    for (int i = 0 ; i < 8 ; i++){
-        for (int j = 0 ; j < 8 ; j++){
-            cout<<IPcache[i*8 + j]<<" ";
-        }
-        cout<<endl;
-    }
-    cout<<"IPSwap Done"<<endl;
-    */
 }
-void KeySwap1(){//done
+void KeySwap1(){
     for (int i = 0 ; i < 56 ; i++){
         add[0][i] = BasicKey[K1_table[i]-1];
     }
-    //cout<<"KeySwap1 Done"<<endl;
 } //basicKey(64) --> add(56)
-
-/*
-void ShiftLeft(){
-	
-}
-void ShiftRight(){
-
-}
-*/
-
 void KeySwap2(int n){//done n>=1
-    //cout<<"KeySwap2 Begin"<<endl;
     for (int i = 0 ; i < 28 ; i++){
         C[n-1][i] = add[n-1][i];
         D[n-1][i] = add[n-1][i + 28];
@@ -262,77 +176,32 @@ void KeySwap2(int n){//done n>=1
     for (int i = 0 ; i < 48 ; i++){
         Key[n][i] = add[n][K2_table[i]-1];
     } //PC-2
-	/*
-    cout <<"Key[ "<<n<<" ] = "<<endl;
-    for (int i = 0 ; i < 8 ; i++){
-        for (int j = 0 ; j < 8 ; j++){
-            cout << Key[n][i*8 + j]<<" ";
-        }
-        cout <<endl;
-    }
-    cout<<"KeySwap2 "<<n<<" Done"<<endl;
-    */
 }//Key[n]
-void E(int n){//done n>=1
-    //cout<<"E Begin"<<endl;
+void E(int n){ //n>=1
     for (int i = 0 ; i < 48 ; i++){
-        ext[i] = R[n-1][E_table[i]-1]; //ext==extent
+        ext[i] = R[n-1][E_table[i]-1]; //ext is extent
     }
-    //cout<<"E done"<<endl;
 }
 int XOR(int m,int n){
     if (m != n)
         return 1;
     return 0;
 }
-void S(){//done
+void S(){
     int Snumber = 0;
     for (int i = 0 ; i < 8 ; i++){
         Snumber = S_table[i][2*ext[6*i] + ext[6*i+5]][8*ext[6*i+1] + 4*ext[6*i+2] + 2*ext[6*i+3] + ext[6*i+4]];
-	/*
-        cout<<"S "<<i<<" turn:"<<endl;
-        cout<<6*i<<"~"<<6*i + 5<<" ";
-        for (int j = 0 ; j < 6 ; j++){
-            cout << ext[i*6 + j]<<" ";
-            }
-        cout <<" "<<6*i<<","<<6*i+5<<" "<<6*i+1<<","<<6*i+2<<","<<6*i+3<<","<<6*i+4;
-        cout << " " << ext[(6*i)]<<ext[(6*i+5)]<<" "<<ext[(6*i+1)]<<ext[(6*i+2)]<<ext[(6*i+3)]<<ext[(6*i+4)];
-        cout<<"     S_table[ "<<i<<" ][ "<<2*ext[6*i] + ext[6*i+5]<<" ][ "<<8*ext[6*i+1] + 4*ext[6*i+2] + 2*ext[6*i+3] + ext[6*i+4]<<" ] = "<< Snumber <<endl;
-
-
-        cout << "S_Pcashe Begin"<<endl;
-        */
         for (int j = 0 ; j < 4 ; j++){
             S_Pcashe[4*i + j] = convert[Snumber][j];
-            //cout << 4*i+j << " " <<convert[Snumber][j]<<" "<< S_Pcashe[4*i + j] << "    ";
         }
-        //cout <<endl<<"S_Pcashe Done"<<endl;
     }
-    /*
-    cout << "S_Pcashe : ";
-    for (int i = 0 ; i < 32 ; i++)
-        cout <<S_Pcashe[i]<<" ";
-    cout << endl;
-    cout<<"S Done"<<endl;
-    */
 }
-void P(int n){//done
+void P(int n){
     for (int i = 0 ; i < 32 ; i++){
         R[n][i] = XOR(L[n-1][i],S_Pcashe[P_table[i]-1]);
     }
-    /*
-    cout << "R["<<n<<"] = "<<endl;
-    for (int i = 0 ; i < 4 ; i++){
-        for (int j = 0 ; j < 8 ; j++){
-			cout << R[n][i*8 + j] << " ";
-        }
-        cout <<endl;
-    }
-    cout<<"P Done"<<endl;
-    */
 }
-void function(int n){//done
-    //cout<<"function "<<n<<" Begin"<<endl;
+void function(int n){
     E(n);
     if (Mode == 0){
         for (int i = 0 ; i < 48 ; i++){
@@ -344,40 +213,24 @@ void function(int n){//done
             ext[i] = XOR(ext[i],Key[17-n][i]);
         }//XOR ext and Key
     }
-    //cout<<"S Begin"<<endl;
     S();
-    //cout<<endl;
     P(n);
 }
-void IPInverseSwap(){//done
+void IPInverseSwap(){
     for (int i = 0 ; i < 32 ; i++){
         R_Lcache[i] = R[16][i];
         R_Lcache[i+32] = L[16][i];
     } //R_Lcache = R + L
-    /*
-    for (int i = 0 ; i < 8 ; i++){
-        for (int j = 0 ; j < 8 ; j++){
-            cout<<R_Lcache[i*8 + j]<<" ";
-        }
-        cout<<endl;
-    }
-    */
     for (int i = 0 ; i < 64 ; i++){
         ciphertext[i] = R_Lcache[IPinverse_table[i]-1];
     }
-    //cout<<"IPInverseSwap Done"<<endl;
 }
 void output(){
-    //cout<<"output Begin"<<endl;
     ofstream outputs;
-    
-    //cout<<"outputs.open Done"<<endl;
     if (Mode == 0){
-        //cout<<"ciphertext"<<endl;
         outputs.open("ciphertext.txt");
     }
     else {
-        //cout<<"cleartext"<<endl;
         outputs.open("cleartext.txt");
     }
     for (int i = 0 ; i < 8 ; i++){
@@ -386,9 +239,7 @@ void output(){
         }
     outputs<<endl;
     }
-    //cout<<"output Done"<<endl;
     outputs.close();
-    //cout<<"outputs.close Done"<<endl;
 }
 int main(){
     input();
@@ -397,23 +248,12 @@ int main(){
     for (int i = 1 ; i<=16 ; i++){
         KeySwap2(i);
     }                                   //get Key[1] to Key[16]
-    //cout<<"GetKeys Done"<<endl;
-    //cout<<"iterate Begin"<<endl;
     for (int i = 1 ; i<=16 ; i++){
         for (int j = 0 ; j < 32 ; j++){
             L[i][j] = R[i-1][j];
         }                               //L[i] = R[i-1]
         function(i);                    // get R[i]
-        /*
-        for (int j = 0 ; j < 32 ; j++)
-            cout<<"L["<<i<<"]["<<j<<"] = "<<L[i][j]<<endl;
-        for (int j = 0 ; j < 32 ; j++)
-            cout<<"R["<<i<<"]["<<j<<"] = "<<R[i][j]<<endl;
-        cout<<"function "<<i<<" Done"<<endl;
-        */
-        
     }                                   //get L[16],R[16]
-    //cout<<"iterate Done"<<endl;
     IPInverseSwap();                    // ciphertext = IPInverseSwap(R[16]+L[16])
     output();
     system("PAUSE");
